@@ -1,95 +1,132 @@
-# Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student
+# Implementation-of-Logistic-Regression-Using-Gradient-Descent
 
 ## AIM:
-To write a program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
+To write a program to implement the the Logistic Regression Using Gradient Descent.
 
 ## Equipments Required:
 1. Hardware – PCs
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm:
-1.Import the required packages and print the present data.
-2.Print the placement data and salary data.
-3.Find the null and duplicate values.
-4.Using logistic regression find the predicted values of accuracy , confusion matrices. 
+1. Start the program
+2. Initialize Parameters
+3. Hypothesis Function (Sigmoid Function)
+4. Cost Function (Log-Loss)
+5. Gradient Calculation
+6. Parameter Update
+7. Repeat for Multiple Iterations
+8. Prediction Function
+9. Model Evaluation
+10. End the program
 
 ## Program:
 ```
-Program to implement the the Logistic Regression Model to Predict the Placement Status of Student.
+/*
+Program to implement the the Logistic Regression Using Gradient Descent.
 Developed by: SARON XAVIER A
-RegisterNumber: 21222330197
-```
-```
+RegisterNumber:  212223230197
+*/
+
 import pandas as pd
-data=pd.read_csv("Placement_Data.csv")
-data.head()
+import numpy as np
+import matplotlib.pyplot as plt
 
-data1=data.copy()
-data1=data1.drop(["sl_no","salary"],axis=1)#Browses the specified row or column
-data1.head()
+dataset=pd.read_csv("Placement_Data.csv")
+dataset
 
-data1.isnull().sum()
+# dropping the serial no and salary col
+dataset=dataset.drop('sl_no',axis=1)
+dataset=dataset.drop('salary',axis=1)
 
-data1.duplicated().sum()
-
+# categorising col, for further labeling
 from sklearn.preprocessing import LabelEncoder
 le=LabelEncoder()
-data1["gender"]=le.fit_transform(data1["gender"])
-data1["ssc_b"]=le.fit_transform(data1["ssc_b"])
-data1["hsc_b"]=le.fit_transform(data1["hsc_b"])
-data1["hsc_s"]=le.fit_transform(data1["hsc_s"])
-data1["degree_t"]=le.fit_transform(data1["degree_t"])
-data1["workex"]=le.fit_transform(data1["workex"])
-data1["specialisation"]=le.fit_transform(data1["specialisation"] )     
-data1["status"]=le.fit_transform(data1["status"])
-data1 
+dataset["gender"]=dataset["gender"].astype('category')
+dataset["ssc_b"]=dataset["ssc_b"].astype('category')
+dataset["hsc_b"]=dataset["hsc_b"].astype('category')
+dataset["hsc_s"]=dataset["hsc_s"].astype('category')
+dataset["degree_t"]=dataset["degree_t"].astype('category')
+dataset["workex"]=dataset["workex"].astype('category')
+dataset["specialisation"]=dataset["specialisation"].astype('category')
+dataset["status"]=dataset["status"].astype('category')
+dataset.dtypes
 
-x=data1.iloc[:,:-1]
-x
+dataset["gender"]=dataset["gender"].cat.codes
+dataset["ssc_b"]=da
+taset["ssc_b"].cat.codes
+dataset["hsc_b"]=dataset["hsc_b"].cat.codes
+dataset["hsc_s"]=dataset["hsc_s"].cat.codes
+dataset["degree_t"]=dataset["degree_t"].cat.codes
+dataset["workex"]=dataset["workex"].cat.codes
+dataset["specialisation"]=dataset["specialisation"].cat.codes
+dataset["status"]=dataset["status"].cat.codes
+dataset
 
-y=data1["status"]
-y
+#deleting the features and labels
+X=dataset.iloc[:,:-1].values
+Y=dataset.iloc[:,-1].values
+Y
 
-from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
+#initialize the model parameters.
+theta=np.random.randn(X.shape[1])
+y=Y
+#define the sigmoid function
+def sigmoid(z):
+    return 1 /(1+np.exp(-z))
 
-from sklearn.linear_model import LogisticRegression
-lr=LogisticRegression(solver="liblinear")
-lr.fit(x_train,y_train)
-y_pred=lr.predict(x_test)
-y_pred
+#define the loss function
+def loss(theta,X,y):
+    h=sigmoid(X.dot(theta))
+    return -np.sum(y*np.log(h)+(1-y)*log(1-h))
 
-from sklearn.metrics import accuracy_score
-accuracy=accuracy_score(y_test,y_pred)
-accuracy
+# define the gradient descent algorithm
+def gradient_descent(theta, X,y,alpha,num_iterations):
+    m=len(y)
+    for i in range(num_iterations):
+        h=sigmoid(X.dot(theta))
+        gradient=X.T.dot(h-y)/m
+        theta-=alpha*gradient
+    return theta
+#train the model
+theta=gradient_descent(theta,X,y,alpha=0.01,num_iterations=1000)
+#Make predictions.
+def predict(theta,X):
+    h=sigmoid(X.dot(theta))
+    y_pred=np.where(h>=0.5,1,0)
+    return y_pred
+y_pred=predict(theta,X)
 
-from sklearn.metrics import confusion_matrix
-confusion=confusion_matrix(y_test,y_pred)
-confusion
+#evaluate the model.
+accuracy=np.mean(y_pred.flatten()==y)
+print('Acurracy:',accuracy)
 
-from sklearn.metrics import classification_report
-classification_report1 = classification_report(y_test,y_pred)
-print(classification_report1)
+print(y_pred)
+print(Y)
 
-lr.predict([[1,80,1,90,1,1,90,1,0,85,1,85]])
+xnew=np.array([[0,87,0,95,0,2,78,2,0,0,1,0]])
+y_prednew=predict(theta,xnew)
+print(y_prednew)
 
+xnew=np.array([[0,0,0,0,0,2,8,2,0,0,1,0]])
+y_prednew=predict(theta,xnew)
+print(y_prednew)
 ```
 
-
-
 ## Output:
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/299165f7-badf-43a6-9bac-2e28a49ba09c)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/74198cf9-0ada-4ef9-87b9-66860113b6e0)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/3ae44786-f167-441c-8323-19319db2945b)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/7f87834c-f62d-48d2-aa76-e71c76e611c7)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/56aaa71b-5270-4840-ab9a-0b6911c02c88)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/3aa52bfd-c381-4ed0-b2a8-7db738bbfeca)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/110c5f2f-db78-4461-95a5-5cb80b248297)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/62cd1cc9-80d0-4244-9392-33c27553d5c8)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/f74b74a7-a576-4485-8e34-b7279e71216d)
-![image](https://github.com/Murali-Krishna0/Implementation-of-Logistic-Regression-Model-to-Predict-the-Placement-Status-of-Student/assets/149054535/0930c274-62a9-445d-b8f5-69891f72150f)
 
+## Accuracy:
+![exp5out](https://github.com/user-attachments/assets/b7ae5aaf-818e-4a29-a22a-fd8cb0e07414)
+
+## Y-pred:
+![exp5out1](https://github.com/user-attachments/assets/dc3f23ff-3a06-4c39-9c38-468578972216)
+
+## New Y-pred:
+![exp5out3](https://github.com/user-attachments/assets/ea128c84-a5f3-47f4-81fc-82e427b0c294)
+
+## New Y-Pred:
+![exp5out3](https://github.com/user-attachments/assets/7e23d6a2-ebe5-4bab-b879-d15921c4df22)
 
 
 ## Result:
-Thus the program to implement the the Logistic Regression Model to Predict the Placement Status of Student is written and verified using python programming.
+Thus the program to implement the the Logistic Regression Using Gradient Descent is written and verified using python programming.
+
